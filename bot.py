@@ -15,16 +15,16 @@ client = discord.Client() #defining client
 #Will be callled once when bot connected
 @client.event
 async def on_ready(): 
-	for guild in client.guilds: #loop though guild data to find the required server
-		if guild.name == GUILD:
-			break
-
-
+	#lambda function that seaches for the name of GUILD - an other expression for a for-search
+	#Resturns if server is not found: AttributeError: 'NoneType' object has no attribute 'name'
+	#lambda function stops when result found, like "break"
+	guild = discord.utils.find(lambda g: g.name == GUILD, client.guilds)
 	print(
 		f'{client.user} is connected to the following guild:\n'
 		f'{guild.name}(id: {guild.id})'
 	)
 
+	#A fucntion that lists all members of the guild set in guild.name
 	members = '\n - '.join([member.name for member in guild.members])
 	print(f'Guild Members:\n - {members}')
 
