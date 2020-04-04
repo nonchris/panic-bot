@@ -13,7 +13,10 @@ client = discord.Client() #defining client
 #and has finished preparing the data from Discord
 #Short: What happens when client is ready for further actions
 #Will be callled once when bot connected
+#client handles the event that Client has made a connection
 @client.event
+#on_ready defines when thsi function is set.
+#name has to be like this, this is not the choice of the autor
 async def on_ready(): 
 	# #lambda function that seaches for the name of GUILD - an other expression for a for-search
 	# #Resturns if server is not found: AttributeError: 'NoneType' object has no attribute 'name'
@@ -25,6 +28,7 @@ async def on_ready():
 	# )
 
 	#finds specified Server in all guilds the client is on and gives information as output
+	#only returns element if all atributes of that iterable element are satisfied
 	guild = discord.utils.get(client.guilds, name=GUILD)
 	print(
 		f'{client.user} is connected to the following guild:\n'
@@ -34,5 +38,13 @@ async def on_ready():
 	#A fucntion that lists all members of the guild set in guild.name
 	members = '\n - '.join([member.name for member in guild.members])
 	print(f'Guild Members:\n - {members}')
+
+@client.event
+async def on_member_join(member):
+	await member.create_dm()
+	await member.dm_channel.send(
+		f'Hi {member.name}, welcome to Hell!'
+		)
+	print(f'{member.name} ({member.id}) joined')
 
 client.run(TOKEN)
