@@ -1,4 +1,5 @@
 import os
+import random
 
 import discord #imports the discord.py library
 from dotenv import load_dotenv #for work with .env files
@@ -39,12 +40,60 @@ async def on_ready():
 	members = '\n - '.join([member.name for member in guild.members])
 	print(f'Guild Members:\n - {members}')
 
+###_WELCOME_PRIVATE_###
 @client.event
 async def on_member_join(member):
+	#await suspends the execution of the surrounding coroutine
+	#until the execution of each coroutine has finished
 	await member.create_dm()
 	await member.dm_channel.send(
 		f'Hi {member.name}, welcome to Hell!'
 		)
 	print(f'{member.name} ({member.id}) joined')
 
+###_MESSAGE RESPONDER_###
+@client.event
+async def on_message(message):
+	#failsafe if triggers itself
+	if message.author == client.user:
+		return
+	#list of possible answers
+	answers = [
+		f"Hello {message.author}!"
+	]	
+	#responds with a random answer from the list above
+	if message.content == "Hi!":
+		response = random.choice(answers)
+		await message.channel.send(response)
+	#to get an error
+	elif message.content == "raise-exeption":
+		raise discord.DiscordException
+
+###_ERROR HANDLER_###
+@client.event
+async def on_error(event, *args, **kwargs):
+	#opens a file
+	with open("err.log", "a") as f:
+		#if error happend in on_message do wirte
+		if event == "on_message":
+			f.write(f"Unhandled message: {args[0]}\n")
+		#if not - do standard error
+		else:
+			raise
+
 client.run(TOKEN)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
