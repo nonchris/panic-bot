@@ -8,6 +8,7 @@ load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN') #reading in the token from .env file
 GUILD = os.getenv('DISCORD_GUILD')
 
+
 client = discord.Client() #defining client
 
 #event handler, which handles events, when client established connection to discord
@@ -30,7 +31,7 @@ async def on_ready():
 
 	#finds specified Server in all guilds the client is on and gives information as output
 	#only returns element if all atributes of that iterable element are satisfied
-	guild = discord.utils.get(client.guilds, name=GUILD)
+	guild = discord.utils.get(client.guilds)#, name=GUILD)
 	print(
 		f'{client.user} is connected to the following guild:\n'
 		f'{guild.name}(id: {guild.id})'
@@ -51,6 +52,8 @@ async def on_member_join(member):
 		)
 	print(f'{member.name} ({member.id}) joined')
 
+
+
 ###_MESSAGE RESPONDER_###
 @client.event
 async def on_message(message):
@@ -68,6 +71,8 @@ async def on_message(message):
 	#to get an error
 	elif message.content == "raise-exeption":
 		raise discord.DiscordException
+
+
 
 ###_ERROR HANDLER_###
 @client.event
