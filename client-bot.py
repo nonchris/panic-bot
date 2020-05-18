@@ -55,6 +55,7 @@ async def on_member_join(member):
 
 
 ###_MESSAGE RESPONDER_###
+#will be called on every single message that is sent
 @client.event
 async def on_message(message):
 	#failsafe if triggers itself
