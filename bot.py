@@ -119,14 +119,12 @@ def find_channel(server, refresh = False):
 @bot.event
 async def on_voice_state_update(member, before, after):
     #if before.channel is None and after.channel is not None:
-    if before.channel is None and after.channel is not None:
+    if after.channel.id == 712247842995175426:
         #print("there is something")
         print(after.channel)
-        print(member.guild.system_channel)
-        if after.channel.id == 712247842995175426:
-            print("panic!!!")
-            channel = "Allgemein"
-            await member.guild.system_channel.send("Alarm!")
+        #print(member.guild.system_channel)
+        print("panic!!!")
+        await member.guild.system_channel.send("Alarm!")
             
 
 # @client.event
