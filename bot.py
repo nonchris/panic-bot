@@ -118,19 +118,24 @@ def find_channel(server, refresh = False):
 
 @bot.event
 async def on_voice_state_update(member, before, after):
-    if before.channel.id == 712247842995175426:
-        print("hat panik verlassen")
-        channel = bot.get_channel(712261115702149190)
-        await channel.send('Panik vorbei')
+    print(after.channel)
+    notify_channel = 712261115702149190
+    panic_channel = 712247842995175426
+    if before.channel.id == panic_channel:
+        #if before.channel.members == []:
+            #print("hat panik verlassen")
+        channel = bot.get_channel(notify_channel)
+        await channel.send('Alle haben sich wieder beruhigt.')
     #Alarm!    
-    elif after.channel.id == 712247842995175426:
-        #print("there is something")
-        print(after.channel)
-        #print(member.guild.system_channel)
-        print("panic!!!")
-        channel = bot.get_channel(712261115702149190)
-        await channel.send('Alarm!')
-        #await member.guild.channel.send("Alarm!")
+    elif after.channel.id == panic_channel:
+        #if after.channel.members == []:
+                #print("there is something")
+                #print(after.channel)
+                #print(member.guild.system_channel)
+                #print("panic!!!")
+            channel = bot.get_channel(notify_channel)
+            await channel.send('Panik!!!!')
+                #await member.guild.channel.send("Alarm!")
             
 
 # @client.event
