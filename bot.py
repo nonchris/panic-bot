@@ -19,15 +19,17 @@ server_channels = {} # Server channel cache
 bot = commands.Bot(command_prefix='!')
 client = discord.Client() #defining client
 
+game = discord.Game('Watches Panicroom')
 #login message
 @bot.event
 async def on_ready():
-	print(f'{bot.user.name} has connected')
-	guild = discord.utils.get(bot.guilds)#, name=GUILD)
-	print(
-		f'The bot is connected to the following guild:\n'
-		f'{guild.name} (id: {guild.id})'
-	)
+    print(f'{bot.user.name} has connected')
+    guild = discord.utils.get(bot.guilds)#, name=GUILD)
+    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="Katzenvideos"))
+    print(
+        f'The bot is connected to the following guild:\n'
+        f'{guild.name} (id: {guild.id})'
+        )
 
 ##__Responder__##
 #usinig bot.command not bot.event
@@ -103,8 +105,6 @@ def find_channel(server, refresh = False):
 
 
 
-panic_member = None #Var to store the user that paniced
-
 cat_videos = [
                 'https://www.youtube.com/watch?v=4IP_E7efGWE&t=7',
                 'https://youtu.be/xaUUNL3g-mU?t=16',
@@ -123,10 +123,12 @@ async def nine_nine(ctx):
     response = random.choice(cat_videos)
     await ctx.send(response)
 
+panic_member = None #Var to store the user that paniced
+voice_members = 0 #Number of pople in voice
 # Panic Room
 @bot.event
 async def on_voice_state_update(member, before, after):
-
+    global voice_members
     panic_alert = [
                 ':rotating_light: ARLARM! %s ist im Panicroom! :rotating_light: ',
                 ':rotating_light: Code RED, ich wiederhole **Code RED**! %s ist im Panicroom! :rotating_light: ',
@@ -134,7 +136,7 @@ async def on_voice_state_update(member, before, after):
 
 
     wait_message = [
-                'Hier schonmal etwas aufheiternedes, bis wirkliche Hilfe eintrifft',
+                'Hier schonmal etwas Aufheiterndes, bis wirkliche Hilfe eintrifft',
                 'Ok - Jetzt bloß nicht durchdrehen, hier ist etwas Ablenkung',
                 'Ich kann dir keinen Alkohol anbieten - Das hier wird auch helfen'
             ]
@@ -143,14 +145,15 @@ async def on_voice_state_update(member, before, after):
     panic_empty = [
                 'Der Panicroom ist wieder leer! - Ist die Lage gebannt? :smiley: ',
                 'Alle haben den Panicroom verlassen, hoffentlich ist keiner gestorben :grimacing:',
-                'Diese Ruhe - Sind alle Existenzkriese überwunden? :thinking:'
+                'Diese Ruhe - Sind alle Existenzkrisen überwunden? :thinking:'
 
             ]
 
     first_aid = [
                 ', halte durch! Rettung naht! :fire_engine:',
                 ', Unterstützung ist auf dem Weg! - Oder will da jemand nur mit dir weinen?',
-                ', jemand interessiert sich für dich udn deine Sorgen! Moment? War der join ein versehen? :thinking:'
+                ', jemand interessiert sich für dich und deine Sorgen! Moment? War der Join ein versehen? :thinking:',
+                ', du hast Freunde! Geteiltes Leid ist doppelt... eh ne, ich meine halbes Leid'
 
 
             ]
@@ -165,9 +168,27 @@ async def on_voice_state_update(member, before, after):
             ]
 
     #setting output channels
-    notify_channel = 712261115702149190
+    notify_channel = 713457148688072744
     panic_channel = 712247842995175426
     
+    
+
+    #check if really someone joined/left the channel
+    #or if only someone muted himself
+    if before.channel == None: #check for member that just joined voice
+        None
+    elif before.channel.id == panic_channel:
+        if len(before.channel.members) == voice_members:
+            return
+        else:
+            None
+    elif after.channel.id == panic_channel:
+        if len(after.channel.members) == voice_members:
+            return
+        else:
+            None
+
+
     ## No Panic
     if before.channel == None: #check for member that just joined voice
         None
@@ -186,6 +207,9 @@ async def on_voice_state_update(member, before, after):
     if after.channel == None: #check for member that left voice
         None   
     elif after.channel.id == panic_channel:
+        # if len(before.channel.members) == len(after.channel.members):
+        #     pass
+            
         if len(after.channel.members) == 1:
             global panic_member #import global Var 
             panic_member = member.mention #write global var
@@ -213,6 +237,14 @@ async def on_voice_state_update(member, before, after):
                 #print("panic!!!")
             channel = bot.get_channel(notify_channel)
             await channel.send(random.choice(more_aid))
+
+    #getting amount of members in channel
+    if before.channel == None: #check for member that just joined voice
+        None
+    elif before.channel.id == panic_channel:
+        voice_members = len(before.channel.members)
+    elif after.channelsid == panic_channel:
+        voice_members = len(after.channel.members)
 
 
 bot.run(TOKEN)
