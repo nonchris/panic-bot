@@ -116,27 +116,73 @@ def find_channel(server, refresh = False):
 
 
 
+def panic_message():
+        messages = [
+            'https://www.youtube.com/watch?v=4IP_E7efGWE&t=7',
+            'https://youtu.be/xaUUNL3g-mU?t=16',
+            (
+                'https://www.youtube.com/watch?v=BgIgKcqPd4k'
+            ),
+        ]
+        panic_response = random.choice(messages)
+        return(panic_response)
+
 @bot.event
 async def on_voice_state_update(member, before, after):
-    print(after.channel)
+    
+    cat_videos = [
+                'https://www.youtube.com/watch?v=4IP_E7efGWE&t=7',
+                'https://youtu.be/xaUUNL3g-mU?t=16',
+                (
+                'https://www.youtube.com/watch?v=BgIgKcqPd4k'
+                ),
+            ]
+
+    #print(before.channel.members)
     notify_channel = 712261115702149190
     panic_channel = 712247842995175426
-    if before.channel.id == panic_channel:
-        #if before.channel.members == []:
+    
+    if before.channel == None: #check for member that just joined voice
+        None
+
+    elif before.channel.id == panic_channel:
+        if len(before.channel.members) == 0:
             #print("hat panik verlassen")
-        channel = bot.get_channel(notify_channel)
-        await channel.send('Alle haben sich wieder beruhigt.')
-    #Alarm!    
+            channel = bot.get_channel(notify_channel)
+            
+            await channel.send('Alle haben sich wieder beruhigt.')
+    #Alarm! 
+    if after.channel == None: #check for member that left voice
+        None   
     elif after.channel.id == panic_channel:
-        #if after.channel.members == []:
+        if len(after.channel.members) == 1:
                 #print("there is something")
                 #print(after.channel)
                 #print(member.guild.system_channel)
                 #print("panic!!!")
             channel = bot.get_channel(notify_channel)
             await channel.send('Panik!!!!')
-                #await member.guild.channel.send("Alarm!")
             
+            panic_response = random.choice(cat_videos)
+            await channel.send(panic_response)
+
+                #await member.guild.channel.send("Alarm!")
+
+        elif len(after.channel.members) == 2:
+                #print("there is something")
+                #print(after.channel)
+                #print(member.guild.system_channel)
+                #print("panic!!!")
+            channel = bot.get_channel(notify_channel)
+            await channel.send('Rettung naht!')
+        #Mehr Rettung!
+        elif len(after.channel.members) > 2:
+                #print("there is something")
+                #print(after.channel)
+                #print(member.guild.system_channel)
+                #print("panic!!!")
+            channel = bot.get_channel(notify_channel)
+            await channel.send('Mehr Rettung!')
 
 # @client.event
 # async def on_voice_state_update(member_before, member_after):
