@@ -49,12 +49,6 @@ async def nine_nine(ctx):
 	await ctx.send(response)
 
 
-@bot.command(name='cat', help='Sends a Video of little kittens')
-async def nine_nine(ctx):
-	response = random.choice(cat_videos)
-	await ctx.send(response)
-
-
 #rooling a dice
 @bot.command(name='dice', help='Simulates rolling dice.')
 #takes the arguments includes a conversion to integers
@@ -118,8 +112,18 @@ cat_videos = [
                 'https://www.youtube.com/watch?v=BgIgKcqPd4k'
                 ),
                 'https://youtu.be/XyNlqQId-nk?t=12',
+                'https://youtu.be/tpiyEe_CqB4?t=28',
+                'https://youtu.be/uHKfrz65KSU',
+                'https://youtu.be/-8JQB_wXjmk?t=11'
             ]
 
+#Cat Trigger
+@bot.command(name='cat', help='Sends a Video of little kittens')
+async def nine_nine(ctx):
+    response = random.choice(cat_videos)
+    await ctx.send(response)
+
+# Panic Room
 @bot.event
 async def on_voice_state_update(member, before, after):
 
@@ -174,6 +178,9 @@ async def on_voice_state_update(member, before, after):
 
             #message:
             await channel.send(random.choice(panic_empty))
+        #if panic member is alone again
+        #elif len(before.channel.members) == 1:
+
 
     ####_PANIC_####
     if after.channel == None: #check for member that left voice
