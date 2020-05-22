@@ -124,11 +124,12 @@ async def nine_nine(ctx):
     await ctx.send(response)
 
 panic_member = None #Var to store the user that paniced
-voice_members = 0 #Number of pople in voice
+voice_members = 0 #Number of people in voice, needed for compares later
 # Panic Room
 @bot.event
 async def on_voice_state_update(member, before, after):
-    global voice_members
+
+    #Defining stings for messages
     panic_alert = [
                 ':rotating_light: ARLARM! %s ist im Panicroom! :rotating_light: ',
                 ':rotating_light: Code RED, ich wiederhole **Code RED**! %s ist im Panicroom! :rotating_light: ',
@@ -162,7 +163,7 @@ async def on_voice_state_update(member, before, after):
                 'Noch mehr Menschen im Panicroom? Sollte man jetzt Panik bekommen? :scream:',
                 'Mehr Leute gleich mehr Pani-, eh... Trost meine ich! (*hust*)',
                 (
-                    'War jetzt schon der Gruppentherapie Termin?! :coffee: '
+                    'War jetzt schon der Gruppentherapie-Termin?!\n '
                     'Wartet! Ich hole nur noch schnell meinen Kaffe! :coffee:  '
                 )
             ]
@@ -171,12 +172,15 @@ async def on_voice_state_update(member, before, after):
     notify_channel = 713457148688072744
     panic_channel = 712247842995175426
     
-    
+    #getting global members count from previous run of that function
+    global voice_members
 
-    #check if really someone joined/left the channel
-    #or if only someone muted himself
+    #check if really someone joined/left the channel or if only someone muted himself
+    #by comparing number of users in channel
     if before.channel == None: #check for member that just joined voice
         None
+    #two options wether user joined or left panicroom
+    #retutns if members in channel stayed the same
     elif before.channel.id == panic_channel:
         if len(before.channel.members) == voice_members:
             return
@@ -190,11 +194,13 @@ async def on_voice_state_update(member, before, after):
 
 
     ## No Panic
+    #triggered if channel becomes empty again
     if before.channel == None: #check for member that just joined voice
         None
 
+    #if channel empty
     elif before.channel.id == panic_channel:
-        if len(before.channel.members) == 0:
+        if len(before.channel.members) == 0: #when panic channel becomes empty again
             channel = bot.get_channel(notify_channel)
 
             #message:
@@ -206,39 +212,35 @@ async def on_voice_state_update(member, before, after):
     ####_PANIC_####
     if after.channel == None: #check for member that left voice
         None   
-    elif after.channel.id == panic_channel:
-        # if len(before.channel.members) == len(after.channel.members):
-        #     pass
+    elif after.channel.id == panic_channel: #main panic function
             
-        if len(after.channel.members) == 1:
+        if len(after.channel.members) == 1: #when first user joins voice
             global panic_member #import global Var 
-            panic_member = member.mention #write global var
+            panic_member = member.mention #write/save global var
             
             #Panic Alert!
             channel = bot.get_channel(notify_channel)
             await channel.send(random.choice(panic_alert) % member.mention)
-            #Cat Video
+            #Cat Video / Message
             await channel.send(random.choice(wait_message)+ ': ' + random.choice(cat_videos))
 
                 #await member.guild.channel.send("Alarm!")
 
-        #Help
+        #Second member / first aid person
         elif len(after.channel.members) == 2:
                 
-            #getting message
+            #message for first aid
+            #mentioning also panic member
             channel = bot.get_channel(notify_channel)
             await channel.send(panic_member + random.choice(first_aid))
 
-        #Mehr Rettung!
+        #More aid! 3rd user and more
         elif len(after.channel.members) > 2:
-                #print("there is something")
-                #print(after.channel)
-                #print(member.guild.system_channel)
-                #print("panic!!!")
             channel = bot.get_channel(notify_channel)
             await channel.send(random.choice(more_aid))
 
     #getting amount of members in channel
+    #saving it for later iterations as a comparable value
     if before.channel == None: #check for member that just joined voice
         None
     elif before.channel.id == panic_channel:
