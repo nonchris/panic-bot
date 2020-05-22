@@ -2,7 +2,6 @@
 import os
 import random
 from dotenv import load_dotenv #for work with .env files (credentials)
-import config #for server configs
 
 import discord
 from discord.ext import commands
@@ -177,20 +176,25 @@ async def on_voice_state_update(member, before, after):
 
     #check if really someone joined/left the channel or if only someone muted himself
     #by comparing number of users in channel
-    if before.channel == None: #check for member that just joined voice
-        None
     #two options wether user joined or left panicroom
     #retutns if members in channel stayed the same
+    #if before is panicroom:
+    if before.channel == None: #check for member that just joined voice
+        None
     elif before.channel.id == panic_channel:
         if len(before.channel.members) == voice_members:
             return
-        else:
-            None
+    else:
+        None
+
+    #if after is panicroom:
+    if after.channel == None: #check for member that left voice
+        None  
     elif after.channel.id == panic_channel:
         if len(after.channel.members) == voice_members:
             return
-        else:
-            None
+    else:
+        None
 
 
     ## No Panic
@@ -245,7 +249,7 @@ async def on_voice_state_update(member, before, after):
         None
     elif before.channel.id == panic_channel:
         voice_members = len(before.channel.members)
-    elif after.channelsid == panic_channel:
+    elif after.channel.id == panic_channel:
         voice_members = len(after.channel.members)
 
 
