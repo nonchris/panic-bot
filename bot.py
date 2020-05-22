@@ -49,16 +49,9 @@ async def nine_nine(ctx):
 	await ctx.send(response)
 
 
-@bot.command(name='kitten', help='Sends a Video of little kittens')
+@bot.command(name='cat', help='Sends a Video of little kittens')
 async def nine_nine(ctx):
-	brooklyn_99_quotes = [
-        'https://www.youtube.com/watch?v=4IP_E7efGWE&t=7',
-        'https://youtu.be/xaUUNL3g-mU?t=16',
-        (
-            'https://www.youtube.com/watch?v=BgIgKcqPd4k'
-        ),
-    ]
-	response = random.choice(brooklyn_99_quotes)
+	response = random.choice(cat_videos)
 	await ctx.send(response)
 
 
@@ -116,65 +109,95 @@ def find_channel(server, refresh = False):
 
 
 
-def panic_message():
-        messages = [
-            'https://www.youtube.com/watch?v=4IP_E7efGWE&t=7',
-            'https://youtu.be/xaUUNL3g-mU?t=16',
-            (
-                'https://www.youtube.com/watch?v=BgIgKcqPd4k'
-            ),
-        ]
-        panic_response = random.choice(messages)
-        return(panic_response)
+panic_member = None #Var to store the user that paniced
 
-@bot.event
-async def on_voice_state_update(member, before, after):
-    
-    cat_videos = [
+cat_videos = [
                 'https://www.youtube.com/watch?v=4IP_E7efGWE&t=7',
                 'https://youtu.be/xaUUNL3g-mU?t=16',
                 (
                 'https://www.youtube.com/watch?v=BgIgKcqPd4k'
                 ),
+                'https://youtu.be/XyNlqQId-nk?t=12',
             ]
 
-    #print(before.channel.members)
+@bot.event
+async def on_voice_state_update(member, before, after):
+
+    panic_alert = [
+                ':rotating_light: ARLARM! %s ist im Panicroom! :rotating_light: ',
+                ':rotating_light: Code RED, ich wiederhole **Code RED**! %s ist im Panicroom! :rotating_light: ',
+            ]
+
+
+    wait_message = [
+                'Hier schonmal etwas aufheiternedes, bis wirkliche Hilfe eintrifft',
+                'Ok - Jetzt bloß nicht durchdrehen, hier ist etwas Ablenkung',
+                'Ich kann dir keinen Alkohol anbieten - Das hier wird auch helfen'
+            ]
+   
+
+    panic_empty = [
+                'Der Panicroom ist wieder leer! - Ist die Lage gebannt? :smiley: ',
+                'Alle haben den Panicroom verlassen, hoffentlich ist keiner gestorben :grimacing:',
+                'Diese Ruhe - Sind alle Existenzkriese überwunden? :thinking:'
+
+            ]
+
+    first_aid = [
+                ', halte durch! Rettung naht! :fire_engine:',
+                ', Unterstützung ist auf dem Weg! - Oder will da jemand nur mit dir weinen?',
+                ', jemand interessiert sich für dich udn deine Sorgen! Moment? War der join ein versehen? :thinking:'
+
+
+            ]
+
+    more_aid = [
+                'Noch mehr Menschen im Panicroom? Sollte man jetzt Panik bekommen? :scream:',
+                'Mehr Leute gleich mehr Pani-, eh... Trost meine ich! (*hust*)',
+                (
+                    'War jetzt schon der Gruppentherapie Termin?! :coffee: '
+                    'Wartet! Ich hole nur noch schnell meinen Kaffe! :coffee:  '
+                )
+            ]
+
+    #setting output channels
     notify_channel = 712261115702149190
     panic_channel = 712247842995175426
     
+    ## No Panic
     if before.channel == None: #check for member that just joined voice
         None
 
     elif before.channel.id == panic_channel:
         if len(before.channel.members) == 0:
-            #print("hat panik verlassen")
             channel = bot.get_channel(notify_channel)
-            
-            await channel.send('Alle haben sich wieder beruhigt.')
-    #Alarm! 
+
+            #message:
+            await channel.send(random.choice(panic_empty))
+
+    ####_PANIC_####
     if after.channel == None: #check for member that left voice
         None   
     elif after.channel.id == panic_channel:
         if len(after.channel.members) == 1:
-                #print("there is something")
-                #print(after.channel)
-                #print(member.guild.system_channel)
-                #print("panic!!!")
-            channel = bot.get_channel(notify_channel)
-            await channel.send('Panik!!!!')
+            global panic_member #import global Var 
+            panic_member = member.mention #write global var
             
-            panic_response = random.choice(cat_videos)
-            await channel.send(panic_response)
+            #Panic Alert!
+            channel = bot.get_channel(notify_channel)
+            await channel.send(random.choice(panic_alert) % member.mention)
+            #Cat Video
+            await channel.send(random.choice(wait_message)+ ': ' + random.choice(cat_videos))
 
                 #await member.guild.channel.send("Alarm!")
 
+        #Help
         elif len(after.channel.members) == 2:
-                #print("there is something")
-                #print(after.channel)
-                #print(member.guild.system_channel)
-                #print("panic!!!")
+                
+            #getting message
             channel = bot.get_channel(notify_channel)
-            await channel.send('Rettung naht!')
+            await channel.send(panic_member + random.choice(first_aid))
+
         #Mehr Rettung!
         elif len(after.channel.members) > 2:
                 #print("there is something")
@@ -182,55 +205,7 @@ async def on_voice_state_update(member, before, after):
                 #print(member.guild.system_channel)
                 #print("panic!!!")
             channel = bot.get_channel(notify_channel)
-            await channel.send('Mehr Rettung!')
-
-# @client.event
-# async def on_voice_state_update(member_before, member_after):
-#     """
-#     Called when the voice state of a member on a server changes.
-    
-#     :param member_before: The state of the member before the change.
-#     :param member_after: The state of the member after the change.
-#     """
-#     server = member_after.server
-#     channel = find_channel(server)
-    
-#     voice_channel_before = member_before.voice_channel
-#     voice_channel_after = member_after.voice_channel
-    
-#     print("something happend")
-#     if voice_channel_before == voice_channel_after:
-#         # No change
-#         return
-    
-#     if voice_channel_before == None:
-#         # The member was not on a voice channel before the change
-#         msg = "%s joined voice channel _%s_" % (member_after.mention, voice_channel_after.name)
-#     else:
-#         # The member was on a voice channel before the change
-#         if voice_channel_after == None:
-#             # The member is no longer on a voice channel after the change
-#             msg = "%s left voice channel _%s_" % (member_after.mention, voice_channel_before.name)
-#         else:
-#             # The member is still on a voice channel after the change
-#             msg = "%s switched from voice channel _%s_ to _%s_" % (member_after.mention, voice_channel_before.name, voice_channel_after.name)
-    
-#     # Try to log the voice event to the channel
-#     try:
-#         await client.send_message(channel, msg)
-#     except:
-#         # No message could be sent to the channel; force refresh the channel cache and try again
-#         channel = find_channel(server, refresh = True)
-#         if channel == None:
-#             # The channel could not be found
-#             print("Error: channel #%s does not exist on server %s." % (config.CHANNEL_NAME, server))
-#         else:
-#             # Try sending a message again
-#             try:
-#                 await client.send_message(channel, msg)
-#             except discord.DiscordException as exception:
-#                 # Print the exception
-#                 print("Error: no message could be sent to channel #%s on server %s. Exception: %s" % (config.CHANNEL_NAME, server, exception))
+            await channel.send(random.choice(more_aid))
 
 
 bot.run(TOKEN)
