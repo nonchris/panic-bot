@@ -249,6 +249,8 @@ async def on_voice_state_update(member, before, after):
         None
     elif before.channel.id == panic_channel:
         voice_members = len(before.channel.members)
+    if if after.channel == None: #check for member that left voice
+        None 
     elif after.channel.id == panic_channel:
         voice_members = len(after.channel.members)
 
