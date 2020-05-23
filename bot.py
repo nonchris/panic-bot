@@ -169,7 +169,7 @@ async def on_voice_state_update(member, before, after):
             ]
 
     #setting output channels
-    notify_channel = 713457148688072744
+    notify_channel = 713437025285701712
     panic_channel = 712247842995175426
     
     #getting global members count from previous run of that function
