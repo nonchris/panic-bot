@@ -1,7 +1,6 @@
 #bot.py
 import os
 import random
-#from dotenv import load_dotenv #for work with .env files (credentials)
 import config
 
 import discord
@@ -9,9 +8,8 @@ from discord.ext import commands
 from discord.ext.commands import Bot
 
 #loading token
-#load_dotenv()
-TOKEN = config.DISCORD_TOKEN #os.getenv('DISCORD_TOKEN') #reading in the token from .env file
-#GUILD = os.getenv('DISCORD_GUILD')
+TOKEN = config.DISCORD_TOKEN #reading in the token from config.py file
+
 
 server_channels = {} # Server channel cache
 
@@ -26,10 +24,10 @@ async def on_ready():
     print(f'{bot.user.name} has connected')
     guild = discord.utils.get(bot.guilds)#, name=GUILD)
     await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="Katzenvideos"))
-    print(
-        f'The bot is connected to the following guild:\n'
-        f'{guild.name} (id: {guild.id})'
-        )
+    print('Bot is connected to the followwing guilds')
+    print()
+    for g in bot.guilds:
+        print(g, g.id)
 
 ##__Responder__##
 #usinig bot.command not bot.event
@@ -168,10 +166,28 @@ async def on_voice_state_update(member, before, after):
                 )
             ]
 
+
     #setting output channels
-    notify_channel = 713437025285701712
-    panic_channel = 712247842995175426
     
+    notify_channel = 712244450826387497 #development
+
+    panic_channel = 711993337862815765 #development
+
+
+    #searching for id of panicroom and emergency on the server the event wr triggered
+    for c in member.guild.channels:
+        if c.name == 'Panicroom': #here you can set the name of your panic channels
+            panic_channel = c.id
+        else:
+            None
+
+    for c in member.guild.channels:
+        if c.name == 'emergency':
+            notify_channel = c.id
+        else:
+            None
+
+
     #getting global members count from previous run of that function
     global voice_members
 
