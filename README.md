@@ -16,10 +16,7 @@ The bot is coded in english, means that all comments and variables have english 
 The specified messasges the bot posts in random orders are in german.  
 
 ### Setup
-You need a discord-API token, the bot.py file and a file named `config.py` which includes the following line:
-```py
-DISCORD_TOKEN='PASTE_YOUR_TOKEN_HERE'
-```
+You need a discord-API token, the bot.py file and a file named `config.py` including your token (just rename the `dummy-config.py`).  
 Both files need to be in the same directory.  
 
 ### Version
