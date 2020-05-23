@@ -1,15 +1,16 @@
 #bot.py
 import os
 import random
-from dotenv import load_dotenv #for work with .env files (credentials)
+#from dotenv import load_dotenv #for work with .env files (credentials)
+import config
 
 import discord
 from discord.ext import commands
 from discord.ext.commands import Bot
 
 #loading token
-load_dotenv()
-TOKEN = os.getenv('DISCORD_TOKEN') #reading in the token from .env file
+#load_dotenv()
+TOKEN = config.DISCORD_TOKEN #os.getenv('DISCORD_TOKEN') #reading in the token from .env file
 #GUILD = os.getenv('DISCORD_GUILD')
 
 server_channels = {} # Server channel cache
